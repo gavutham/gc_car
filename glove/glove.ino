@@ -9,12 +9,13 @@
 #define bluetoothBaudRate 38400
 
 SoftwareSerial bluetooth(txPin, rxPin);
-MPU6050 mpu(Wire); //scl@a5, sca@a4
+MPU6050 mpu(Wire); //scl@a5, sda@a4
 unsigned long timer = 0;
 
 float x = 0, y = 0;
+int value = 0;
 
-void send(char command) {
+void send(int command) {
   bluetooth.write(command);
 }
 
@@ -40,10 +41,32 @@ void loop() {
     x = mpu.getAngleX();
     y = mpu.getAngleY();
     timer = millis();
-    if (x > 30) send('f');
-    else if (x < -40) send('b');
-    if (y > 40) send('r');
-    else if (y < -40) send('l'); 
-    if (!(x > 30 || x < -40 || y > 40 || y < -40)) send('s');
+
+    if (x > 30) {
+      //forward motion - 1 to 60
+      if (x > 70) value = 60;
+      else value = map(x, 31, 70, 1, 60);
+    }
+    else if (x < -40) {
+      //backward motion - 61 to 120
+      if ( x < -80 ) value = 120;
+      else value = map(x, -40, -80, 61, 120);
+    }
+    if (y > 40) {
+      //turn right - 121 to 180
+      if ( y > 80 ) value = 180;
+      else value = map(y, 40, 80, 121, 180);
+    }
+    else if (y < -30) {
+      //turn left - 181 to 240
+      if ( y < -55 ) value = 240;
+      else value = map(y, -30, -55, 181, 240);
+    }
+
+    if (!(x > 30 || x < -40 || y > 40 || y < -30)) value = 0; //stop
+
+    Serial.println(value);
+
+    send(value);
   }
 }

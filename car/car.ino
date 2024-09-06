@@ -1,38 +1,45 @@
 #include <SoftwareSerial.h>
 
-#define rxPin 8
-#define txPin 9
+#define rxPin 13
+#define txPin 12
 
-#define motorpin1 2
-#define motorpin2 3
-#define motorpin3 4
-#define motorpin4 5
+#define motorpin1 10
+#define motorpin2 9
+#define motorpin3 8
+#define motorpin4 7
+
+#define speedControlA 11
+#define speedControlB 6
 
 #define monitorBaudRate 9600
 #define hc05BaudRate 38400
 
 SoftwareSerial bluetooth(txPin, rxPin);
-char command = 's';
+int command = 0;
 
 void forward () {
+  Serial.println("forward");
   digitalWrite(motorpin1, LOW);
 	digitalWrite(motorpin2, HIGH);
 	digitalWrite(motorpin3, LOW);
 	digitalWrite(motorpin4, HIGH);
 }
 void backward () {
+  Serial.println("back");
   digitalWrite(motorpin1, HIGH);
 	digitalWrite(motorpin2, LOW);
 	digitalWrite(motorpin3, HIGH);
 	digitalWrite(motorpin4, LOW);
 }
-void right () {
+void left () {
+  Serial.println("left");
   digitalWrite(motorpin1, LOW);
 	digitalWrite(motorpin2, HIGH);
 	digitalWrite(motorpin3, HIGH);
 	digitalWrite(motorpin4, LOW);
 }
-void left () {
+void right () {
+  Serial.println("right");
   digitalWrite(motorpin1, HIGH);
 	digitalWrite(motorpin2, LOW);
 	digitalWrite(motorpin3, LOW);
@@ -46,6 +53,12 @@ void stop () {
 	digitalWrite(motorpin4, LOW);
 }
 
+void setSpeed(int speed) {
+  Serial.println(speed);
+  analogWrite(speedControlA, speed);
+  analogWrite(speedControlB, speed);
+}
+
 void setup() {
   Serial.begin(monitorBaudRate);
   while (!Serial) { }
@@ -55,6 +68,8 @@ void setup() {
 	pinMode(motorpin2, OUTPUT);
 	pinMode(motorpin3, OUTPUT);
 	pinMode(motorpin4, OUTPUT);
+  pinMode(speedControlA, OUTPUT);
+  pinMode(speedControlB, OUTPUT);
   stop();
 }
 
@@ -65,27 +80,27 @@ void loop() { // run over and over
     Serial.println(command);
   }
 
-  switch (command) {
-    case 'f': 
-      forward();
-      break;
-    
-    case 'b':
-      backward();
-      break;
-
-    case 'r': 
-      right();
-      break;
-
-    case 'l':
-      left();
-      break;
-
-    case 's':
-      stop();
-      break;
+  if ( command >= 1 && command <= 60 ) {
+    setSpeed(map(command, 1, 60, 1, 255));
+    forward();
+  } else if ( command >= 61 && command <= 120 ) {
+    setSpeed(map(command, 61, 120, 1, 255));
+    backward();
   }
+
+  if ( command >= 121 && command <= 180 ) {
+    setSpeed(map(command, 121, 180, 1, 255));
+    right();
+  } else if ( command >= 181 && command <= 240 ) {
+    setSpeed(map(command, 181, 240, 1, 255));
+    left();
+  }
+
+  if( command == 0 ) {
+    setSpeed(0);
+    stop();
+  }
+
 }
 
 //0023:09:01314A slave id
