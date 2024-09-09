@@ -42,13 +42,14 @@ void loop() {
     y = mpu.getAngleY();
     timer = millis();
 
-    if (x > 30) {
+    if (x > 25) {
       //forward motion - 1 to 60
       if (x > 70) value = 60;
-      else value = map(x, 31, 70, 1, 60);
+      else value = map(x, 25, 70, 1, 60);
     }
     else if (x < -40) {
       //backward motion - 61 to 120
+      Serial.println(x);
       if ( x < -80 ) value = 120;
       else value = map(x, -40, -80, 61, 120);
     }
@@ -57,13 +58,13 @@ void loop() {
       if ( y > 80 ) value = 180;
       else value = map(y, 40, 80, 121, 180);
     }
-    else if (y < -30) {
+    else if (y < -25) {
       //turn left - 181 to 240
       if ( y < -55 ) value = 240;
-      else value = map(y, -30, -55, 181, 240);
+      else value = map(y, -25, -55, 181, 240);
     }
 
-    if (!(x > 30 || x < -40 || y > 40 || y < -30)) value = 0; //stop
+    if (!(x > 25 || x < -40 || y > 40 || y < -25)) value = 0; //stop
 
     Serial.println(value);
 

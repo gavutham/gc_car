@@ -18,28 +18,24 @@ SoftwareSerial bluetooth(txPin, rxPin);
 int command = 0;
 
 void forward () {
-  Serial.println("forward");
   digitalWrite(motorpin1, LOW);
 	digitalWrite(motorpin2, HIGH);
 	digitalWrite(motorpin3, LOW);
 	digitalWrite(motorpin4, HIGH);
 }
 void backward () {
-  Serial.println("back");
   digitalWrite(motorpin1, HIGH);
 	digitalWrite(motorpin2, LOW);
 	digitalWrite(motorpin3, HIGH);
 	digitalWrite(motorpin4, LOW);
 }
 void left () {
-  Serial.println("left");
   digitalWrite(motorpin1, LOW);
 	digitalWrite(motorpin2, HIGH);
 	digitalWrite(motorpin3, HIGH);
 	digitalWrite(motorpin4, LOW);
 }
 void right () {
-  Serial.println("right");
   digitalWrite(motorpin1, HIGH);
 	digitalWrite(motorpin2, LOW);
 	digitalWrite(motorpin3, LOW);
@@ -71,6 +67,7 @@ void setup() {
   pinMode(speedControlA, OUTPUT);
   pinMode(speedControlB, OUTPUT);
   stop();
+  setSpeed(0);
 }
 
 
