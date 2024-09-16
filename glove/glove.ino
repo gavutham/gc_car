@@ -42,21 +42,20 @@ void loop() {
     y = mpu.getAngleY();
     timer = millis();
 
-    if (x > 25) {
+    if (x > 20) {
       //forward motion - 1 to 60
-      if (x > 70) value = 60;
-      else value = map(x, 25, 70, 1, 60);
+      if (x > 50) value = 60;
+      else value = map(x, 20, 50, 1, 60);
     }
-    else if (x < -40) {
+    else if (x < -25) {
       //backward motion - 61 to 120
-      Serial.println(x);
-      if ( x < -80 ) value = 120;
-      else value = map(x, -40, -80, 61, 120);
+      if ( x < -65 ) value = 120;
+      else value = map(x, -25, -65, 61, 120);
     }
-    if (y > 40) {
+    if (y > 30) {
       //turn right - 121 to 180
-      if ( y > 80 ) value = 180;
-      else value = map(y, 40, 80, 121, 180);
+      if ( y > 70 ) value = 180;
+      else value = map(y, 30, 70, 121, 180);
     }
     else if (y < -25) {
       //turn left - 181 to 240
